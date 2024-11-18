@@ -1,0 +1,100 @@
+[tool]
+[tool.poetry]
+name = "textnets"
+version = "0.9.5"
+description = "Automated text analysis with networks"
+license = "GNU General Public License v3"
+keywords = [
+    "computational social science",
+    "network analysis",
+    "nlp",
+    "text analysis",
+    "visualization"
+]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
+    "Operating System :: OS Independent",
+    "Natural Language :: English",
+    "Programming Language :: Cython",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3 :: Only",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Scientific/Engineering :: Visualization",
+    "Topic :: Sociology"
+]
+homepage = "https://textnets.readthedocs.io"
+repository = "https://github.com/jboynyc/textnets"
+authors = ["John D. Boy <jboy@bius.moe>"]
+readme = "README.rst"
+include = [
+    { path = "textnets/_ext*.so", format = "wheel" },
+    "docs/*.py",
+    "docs/refs.bib",
+    "docs/*.rst",
+    "docs/_static",
+    "docs/*.svg",
+    "LICENSE",
+    "*.rst",
+    "tests/*.py",
+]
+
+[tool.poetry.urls]
+"Bug Tracker" = "https://github.com/jboynyc/textnets/issues"
+"Changelog" = "https://textnets.readthedocs.io/en/stable/history.html"
+"Documentation" = "https://textnets.readthedocs.io"
+
+[tool.poetry.dependencies]
+python = ">=3.9,<=3.13"
+
+[tool.poetry.group.doc.dependencies]
+en-core-web-sm = {url = "https://github.com/explosion/spacy-models/releases/download/en_core_web_sm-3.7.1/en_core_web_sm-3.7.1-py3-none-any.whl"}
+ipykernel = "^6.27.1"
+jupyter-sphinx = "^0.5.3"
+shibuya = {version = "^2024.1.2", allow-prereleases = true}
+sphinx = "^7.2.6"
+sphinxcontrib-bibtex = "^2.6.1"
+
+[tool.poetry.group.dev.dependencies]
+coverage = "^7.3.1"
+flake8 = "^6.1.0"
+mypy = "^1.5.1"
+pytest = "^7.4.3"
+ufmt = "^2.1.0"
+pandas-stubs = "^2.1.4.231227"
+
+[tool.poetry.extras]
+fca = ["concepts"]
+
+[tool.poetry.build]
+script = "build.py"
+generate-setup-file = true
+
+[build-system]
+requires = [
+    "Cython",
+    "poetry-core>=1.0.0",
+    "setuptools>=41",
+]
+build-backend = "poetry.core.masonry.api"
+
+[tool.mypy]
+files = "textnets"
+warn_unused_ignores = true
+warn_unreachable = true
+ignore_missing_imports = true
+pretty = true
+
+[tool.ufmt]
+excludes = [
+    "textnets/_ext*.so"
+]
+
+[tool.pytest.ini_options]
+filterwarnings = ["ignore:invalid escape sequence:DeprecationWarning"]

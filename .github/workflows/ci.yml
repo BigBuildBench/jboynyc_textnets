@@ -1,0 +1,57 @@
+# This workflow will install Python dependencies, run tests and lint with a variety of Python versions
+# For more information see: https://help.github.com/actions/language-and-framework-guides/using-python-with-github-actions
+
+name: CI
+
+on:
+  push:
+    branches: [ "trunk", "dev" ]
+  pull_request:
+    branches: [ "trunk" ]
+
+jobs:
+
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-python@v4
+        with:
+          python-version: "3.11"
+      - name: Install linter
+        shell: bash
+        run: python -m pip install flake8
+      - name: Lint with flake8
+        run: flake8 textnets tests
+
+  test:
+    runs-on: ${{ matrix.os }}
+    needs: lint
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+        python-version: ["3.9", "3.10", "3.11", "3.12"]
+        include:
+          - os: ubuntu-latest
+            python-version: "pypy3.10"
+    steps:
+    - uses: actions/checkout@v3
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v4
+      with:
+        python-version: ${{ matrix.python-version }}
+    - name: Install OpenBLAS
+      if: ${{ startsWith(matrix.python-version, 'pypy') }}
+      run: |
+        sudo apt-get install -y libopenblas-dev
+    - name: Install dependencies
+      shell: bash
+      run: |
+        if [ "$RUNNER_OS" == "macOS" ]; then
+          brew install cairo
+        fi
+        python -m pip install poetry
+        poetry install --with doc --all-extras
+    - name: Test with pytest
+      run: poetry run pytest
